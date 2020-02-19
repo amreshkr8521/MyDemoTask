@@ -1,0 +1,93 @@
+ create procedure showcursor()
+     BEGIN
+     declare o varchar(50);
+     declare done BOOLEAN DEFAULT=0;	
+     declare cursor1 CURSOR
+     FOR
+     SELECT name FROM demo;
+     DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done=1;
+     open cursor1;
+     REPEAT
+     FETCH cursor1 INTO o;
+     UNTIL done END REPEAT;
+     close cursor1;
+     END;
+
+
+
+
+CREATE TABLE Employee(
+         id            int,
+         first_name    VARCHAR(15),
+         last_name     VARCHAR(15),
+         start_date    DATE,
+         end_date      DATE,
+         salary        FLOAT(8,2),
+         city          VARCHAR(10),
+         description   VARCHAR(15)
+   );
+
+
+insert into Employee(id,first_name,last_name,start_date,end_Date,salary,City,Description)
+values (1,'Jason','Martin','19960725','20060725',1234.56,'Toronto','Programmer');
+
+
+insert into Employee(id,first_name,last_name,start_date,end_Date,salary,City,Description)
+values(2,'Alison','Mathews','19760321','19860221',6661.78,'Vancouver','Tester');
+
+
+
+insert into Employee(id,first_name,last_name,start_date,end_Date,salary,City,Description)
+values(3,'James','Smith','19781212','19900315',6544.78,'Vancouver','Tester');
+
+
+
+
+ delimiter //
+ CREATE PROCEDURE myProc1()
+         READS SQL DATA
+     BEGIN
+          DECLARE l_last_row INT DEFAULT 0;
+          DECLARE l_dept_id  INT;
+          DECLARE c_dept CURSOR FOR
+               SELECT id
+                 FROM Employee;
+          DECLARE continue handler for NOT FOUND SET l_last_row=1;
+   
+          OPEN c_dept;
+          dept_cursor: LOOP
+               FETCH c_dept INTO l_dept_id;
+               IF (l_last_row=1) THEN
+                    LEAVE dept_cursor;
+               END IF;
+               select l_dept_id;
+   
+          END LOOP dept_cursor;
+          CLOSE c_dept;
+    
+     END//
+
+
+
+DELIMITER //
+CREATE PROCEDURE fetch_tech()
+	BEGIN
+		DECLARE TECH varchar(45);
+		DECLARE done int DEFAULT 0;
+		DECLARE get_tech CURSOR
+			FOR
+			SELECT tech FROM demo;
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done=1;
+		OPEN get_tech;
+	tech_Loop :LOOP
+		FETCH get_tech INTO TECH;
+		IF(done=1)THEN
+		LEAVE tech_Loop;
+		END IF;
+		SELECT TECH;
+		END LOOP tech_Loop;
+		CLOSE get_tech;
+END;//
+
+
+
