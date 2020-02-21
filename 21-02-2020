@@ -1,0 +1,68 @@
+DELIMITER //
+create TRIGGER verifyAdult 
+AFTER INSERT ON eData FOR EACH ROW 
+ BEGIN DECLARE AGE INT;
+ SELECT age INTO AGE  FROM eData; 
+ IF AGE>18 THEN  
+UPDATE eData  SET adult ='TRUE';
+ ELSE
+UPDATE eData SET  adult='FALSE'; 
+ END IF; 
+ END;
+//
+
+create table loginTime(login TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,id int(10) not null,foreign key(id) references personData(id));
+
+
+
+
+ create TRIGGER LOGIN
+     AFTER INSERT
+     ON personData FOR EACH ROW
+     BEGIN
+     INSERT INTO loginTime();
+     END;
+     //
+
+create table person(id int(10) not null auto_increment primary key,name varchar(50) not null);
+
+create table logintime(login timestamp default current_timestamp);
+
+
+
+create TRIGGER login
+AFTER INSERT
+ON person FOR EACH ROW
+BEGIN 
+INSERT INTO logintime(login)VAlUES(now());
+END; 
+
+
+insert into person(name)values('amresh');
+
+select * from logintime;
+
+
+
+| login               |
++---------------------+
+| 2020-02-21 12:47:23 |
++---------------------+
+
+
+create table updatetable (noOfUpdate int(10) DEFAULT 0);
+
+
+create TRIGGER updateCount
+AFTER UPDATE
+ON person FOR EACH ROW
+BEGIN
+DECLARE count int;
+select noOfUpdate INTO count  from updatetable;
+SET count=count+1;
+IF count>0 THEN
+UPDATE updatetable SET noOFUpdate=count where noOfUpdate=count-1;
+ELSE
+INSERT INTO updatetable (noOFUpdate)VALUES(1);
+END IF;
+END;
