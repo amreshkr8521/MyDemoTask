@@ -1,0 +1,72 @@
+mysq -u root -p
+
+create database temporary;
+
+
+create table temoemployee(id int(10) not null auto_increment,name varchar(50) not null,age int(10) not null,salary decimal(15,2),location varchar(50),email varchar(100) not null,primary key (id));
+
+
+create table logintime(id int(10),login timestamp,foreign key(id) references temoemployee(id));
+
+create table deletedemployee(id int(10),email varchar(100),deletedTime timestamp,foreign key(id) references temoemployee(id));
+
+DELIMITER //
+create procedure showEmployee()
+BEGIN
+SELECT * FROM temoemployee;
+END;//
+
+
+
+create procedure showDeletedEmployee()
+BEGIN
+SELECT * FROM deletedemployee;
+END;//
+
+create procedure insertCursor()
+reads sql data
+BEGIN
+DECLARE done int default 0;
+DECLARE ID int;
+DECLARE insertcur CURSOR FOR
+SELECT id  FROM temoemployee ;
+DECLARE continue handler for NOT FOUND SET done=1;
+OPEN insertcur;
+ins_loop:LOOP
+FETCH insertcur INTO ID;
+IF(done=1)THEN
+LEAVE ins_loop;
+END IF;
+select ID;
+INSERT INTO logintime VALUES(ID,EMAIL,now());
+END LOOP ins_loop;
+CLOSE insertcur;
+END;//
+
+
+INSERT INTO temoemployee (name,age,salary,location,email) VALUES('arvind',24,250000.00,'Haryana','arvind@gmal.com');
+
+
+
+
+CREATE TRIGGER registeration
+AFTER INSERT
+ON temoemployee FOR EACH ROW
+BEGIN
+DECLARE EMAIL varchar(100);
+SELECT email INTO EMAIL FROM temoemployee;
+INSERT INTO logintime(login,email) VALUES(now(),EMAIL);
+END;
+
+SELECT DATABASE();  --> shows the current working database.
+
+
+
+
+create table temp(id int(50) not null auto_increment,name varchar(50),age int(10),salary decimal(15,2),location varchar(100),email varchar(100),primary key(id));
+
+delimiter ;;
+create procedure copydata(in newtable_name varchar,database_name varchar,oldtable_name varchar)
+begin
+insert into newtable_name select * from database_name.oldtable_name;
+END ;;
