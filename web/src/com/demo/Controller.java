@@ -4,6 +4,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -12,14 +13,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.bridgelabz.userManagement.businessLgic.BusinessLogic;
+import com.bridgelabz.userManagement.businessLgic.PermissionBusiness;
+import com.bridgelabz.userManagement.model.Authorization;
 import com.bridgelabz.userManagement.model.User;
-
 
 @Path("user")
 @Stateless
 public class Controller {
 	@EJB
 	BusinessLogic businessLogic;
+	PermissionBusiness permission;
 
 	public Controller() {
 
@@ -68,4 +71,32 @@ public class Controller {
 		else
 			return user;
 	}
+
+	@Path("delete")
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.TEXT_PLAIN)
+	public String deleteUser(@PathParam("username") String name) {
+		businessLogic.deleteUser(name);
+		return "done";
+
+	}
+
+	@PUT
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Path("permission")
+	public void givePermission(@PathParam("dashboard") String dashboard, @PathParam("settings") String settings,
+			@PathParam("usersInformation") String usersInformation, @PathParam("WebPageOne") String WebPageOne,
+			@PathParam("WebPageTwo") String WebPageTwo, @PathParam("WebPageThree") String WebPageThree) {
+		Authorization athorization=new Authorization();
+		athorization.setDashboard(dashboard);
+		athorization.setSettings(settings);
+		athorization.setUsersInformation(usersInformation);
+		athorization.setWebPageOne(WebPageOne);
+		athorization.setWebPageThree(WebPageThree);
+		athorization.setWebPagetwo(WebPageTwo);
+		permission.givePermission(athorization);
+	}
+
 }

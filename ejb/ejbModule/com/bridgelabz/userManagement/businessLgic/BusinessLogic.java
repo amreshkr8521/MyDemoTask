@@ -27,8 +27,8 @@ public class BusinessLogic {
 			return new User();
 	}
 
-	public void deleteUser(User user) {
-		User consumer = entityManager.find(User.class, user.getUser());
+	public void deleteUser(String user) {
+		User consumer = entityManager.find(User.class, user);
 		entityManager.remove(consumer);
 	}
 
